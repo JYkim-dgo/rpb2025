@@ -14,13 +14,14 @@ def dfs(x,y,image, buffer):
     stack =[]
     visited = []
     line = []
+    H,W=shape.image
     stack.append([x,y])
     while stack :
         node = stack.pop()
         x_check = node[0]
         y_check = node[1]
         
-        if 0 <= x_check <= 7 and 0 <= y_check <=7:
+        if 0 <= x_check < W and 0 <= y_check < H:
             if node not in visited:
                 if image[y_check,x_check] == 0:
                     line.append((x_check,y_check))
