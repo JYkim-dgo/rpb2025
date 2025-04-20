@@ -1,0 +1,83 @@
+import numpy as np
+
+def checkImage(x, y, image, buffer):
+    H, W = image.shape
+    if 0 <= x < W and 0 <= y < H:
+        if buffer[y, x] == 0 and image[y, x] == 0:
+            return True
+    return False
+
+
+
+
+def dfs(x,y,image, buffer):
+    stack =[]
+    visited = []
+    line = []
+    stack.append([x,y])
+    while stack :
+        node = stack.pop()
+        x_check = node[0]
+        y_check = node[1]
+        
+        if 0 <= x_check <= 7 and 0 <= y_check <=7:
+            if node not in visited:
+                if image[y_check,x_check] == 0:
+                    line.append((x_check,y_check))
+                    stack.extend([[x_check,y_check+1],[x_check,y_check-1],[x_check+1,y_check],[x_check-1,y_check]])
+                visited.append(node)
+            
+
+
+    #TODO_2
+    
+    return line
+
+
+#no need to change fit_line
+def fit_line(points_list):
+    num_a, den_a, x_bar, y_bar = 0, 0, 0, 0
+    n = len(points_list)
+
+    for i in range(n):   # x_bar & y_bar 계산하기
+        x,y = points_list[i]
+        x_bar += x
+        y_bar += y
+
+    x_bar = x_bar /n
+    y_bar = y_bar /n
+
+    for i in range(n):    # num_a & den_a 계산하기
+        x,y = points_list[i]
+        num_a += (x - x_bar) * (y - y_bar)
+        den_a += (x - x_bar) ** 2
+
+    a = num_a / den_a
+    b = y_bar - a * x_bar
+    return a, b
+
+
+def find_max_line(image):
+    buffer = np.zeros_like(image)
+    max_line_candidate =[] 
+    max_line = []
+    H,W= image.shape
+    
+    #TODO_3 
+    for y in range(8):
+        for x in range(8):
+            if checkImage(x,y,image,buffer) == True:
+                max_line_candidate.append(dfs(x,y,image,buffer))
+    max_line.extend(max(max_line_candidate, key=len))
+    
+    a, b = fit_line(max_line)
+
+    return a,b
+    
+    
+
+#no need to change below code
+if __name__ == '__main__':
+    image = np.loadtxt("line.csv", delimiter=",")
+    a,b = find_max_line(image)
+    print(a,b)
