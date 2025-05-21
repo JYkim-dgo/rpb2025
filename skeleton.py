@@ -41,11 +41,12 @@ def color_detector(img):
 
     # 6) R/G/B 카운트 (vectorized)
     R_count = np.count_nonzero((h_valid > 160) | (h_valid < 20))
-    G_count = np.count_nonzero((h_valid > 40) & (h_valid < 80))
     B_count = np.count_nonzero((h_valid > 100) & (h_valid < 140))
 
+    total_valid = h_valid.size
+    others_count = total_valid - R_count - B_count
     # 7) 가장 큰 값의 키 반환
-    counts = {'+1': R_count, '0': G_count, '-1': B_count}
+    counts = {'+1': R_count, '0': others_count, '-1': B_count}
     return max(counts, key=counts.get)
 
 class DetermineColor(Node):
